@@ -1,7 +1,9 @@
 target/
-!.mvn/wrapper/maven-wrapper.jar
 
-.mvnw
+.mvn
+mvnw
+mvnw.cmd
+derby.log
 
 ### STS ###
 .apt_generated
