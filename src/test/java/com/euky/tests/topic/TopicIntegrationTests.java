@@ -22,13 +22,13 @@ public class TopicIntegrationTests {
     @Test
     public void getTopicsTest() {
         String body = this.restTemplate.getForObject("/topics", String.class);
-        assertThat(body).isEqualTo("Hello World");
+        assertThat(body).isEqualTo("[]");
     }
 
     @Test
     public void getTopicTest() {
         String body = this.restTemplate.getForObject("/topic/java", String.class);
-        assertThat(body).isEqualTo("Hello World");
+        assertThat(body).isNull();
     }
 
 
