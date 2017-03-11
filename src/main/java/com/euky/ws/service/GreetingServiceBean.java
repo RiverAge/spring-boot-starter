@@ -51,6 +51,10 @@ public class GreetingServiceBean implements  GreetingService {
     @Override
     @CacheEvict(value = "greetings", key = "#id")
     public void delete(Long id) {
+        if (findOne(id) == null) {
+            return;
+        }
+
         greetingRepository.delete(id);
     }
 
