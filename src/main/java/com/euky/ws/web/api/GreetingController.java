@@ -1,6 +1,10 @@
 package com.euky.ws.web.api;
 
+import com.euky.ws.service.EmailService;
+import com.euky.ws.service.GreetingService;
 import com.euky.ws.service.GreetingServiceBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -8,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.concurrent.Future;
+
 
 /**
  * Created by euky on 2017/3/9.
@@ -16,12 +22,16 @@ import java.util.Collection;
 @RestController
 public class GreetingController {
 
-    @Autowired
-    private GreetingServiceBean greetingService;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @RequestMapping(
+    @Autowired
+    private GreetingService greetingService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @GetMapping(
             value = "/api/greetings",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<Greeting>> getGreetings() {
         Collection<Greeting> greetings = greetingService.findAll();
@@ -29,9 +39,8 @@ public class GreetingController {
         return new ResponseEntity<Collection<Greeting>>(greetings, HttpStatus.OK);
     }
 
-    @RequestMapping(
+    @GetMapping(
             value = "/api/greetings/{id}",
-            method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Greeting> getGreeting(@PathVariable Long id) {
         Greeting greeting = greetingService.findOne(id);
@@ -42,9 +51,8 @@ public class GreetingController {
         return new ResponseEntity<Greeting>(greeting, HttpStatus.OK);
     }
 
-    @RequestMapping(
+    @PostMapping(
             value = "/api/greetings",
-            method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Greeting> createGreeting(@RequestBody Greeting greeting) {
@@ -52,9 +60,8 @@ public class GreetingController {
         return new ResponseEntity<Greeting>(savedGreeting, HttpStatus.CREATED);
     }
 
-    @RequestMapping(
+    @PutMapping(
             value = "/api/greetings/{id}",
-            method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE )
     public ResponseEntity<Greeting> updateGreeting(@RequestBody Greeting greeting) {
@@ -65,12 +72,42 @@ public class GreetingController {
         return new ResponseEntity<Greeting>(updatedGreeting, HttpStatus.OK);
     }
 
-    @RequestMapping(
-            value = "/api/greetings/{id}",
-            method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/api/greetings/{id}")
     public ResponseEntity<Greeting> deleteGreeting(@PathVariable Long id) {
         greetingService.delete(id);
 
         return new ResponseEntity<Greeting>(HttpStatus.NO_CONTENT);
     }
+
+    @PostMapping(value = "/api/greetings/{id}/send", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Greeting> sendGreeting(@PathVariable Long id, @RequestParam(value = "wait", defaultValue = "false") boolean waitForAsyncResult) {
+        logger.info("> sendGreeting");
+
+        Greeting greeting = null;
+
+        try {
+            greeting = greetingService.findOne(id);
+            if (greeting == null) {
+                logger.info("< sendGreeting");
+                return new ResponseEntity<Greeting>(HttpStatus.NOT_FOUND);
+            }
+
+            if (waitForAsyncResult) {
+                Future<Boolean> asyncResponse = emailService.sendAsyncWithResult(greeting);
+                boolean emailSent = asyncResponse.get();
+                logger.info("- greeting email send ? {} ", emailSent);
+            } else {
+                emailService.sendAsync(greeting);
+            }
+        } catch (Exception e) {
+            logger.error("A problem occurred sending the Greeting.", e);
+            return new ResponseEntity<Greeting>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        logger.info("< sendGreeting");
+        return new ResponseEntity<Greeting>(greeting, HttpStatus.OK);
+    }
+
+
+
 }
