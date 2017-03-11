@@ -1,5 +1,6 @@
 package com.euky.ws;
 
+import com.euky.ws.web.api.BaseController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -26,6 +27,11 @@ public class AbstractControllerTest extends AbstractTest {
 
     protected void setUp() {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
+
+    protected void setUp(BaseController controller) {
+        mvc = MockMvcBuilders.standaloneSetup(controller).build();
+
     }
 
     protected String mapToJson(Object obj) throws JsonProcessingException {
