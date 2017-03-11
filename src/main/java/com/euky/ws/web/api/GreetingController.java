@@ -20,7 +20,7 @@ import java.util.concurrent.Future;
  */
 
 @RestController
-public class GreetingController {
+public class GreetingController extends BaseController{
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
