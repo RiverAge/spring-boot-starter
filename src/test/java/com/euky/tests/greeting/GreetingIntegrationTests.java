@@ -22,33 +22,26 @@ public class GreetingIntegrationTests {
     private TestRestTemplate testRestTemplate;
 
     @Test
-    public void postGreetingTest() {
+    public void curdTestForGreeting() {
+        //POST TEST
         Greeting greeting = new Greeting();
         greeting.setText("test for post Greeting");
         String body = testRestTemplate.postForObject("/api/greetings", greeting, String.class);
         assertThat(body).isEqualTo("{\"id\":1,\"text\":\"test for post Greeting\"}");
-    }
 
-    @Test
-    public void putGreetingTest() {
-        Greeting greeting = new Greeting();
-        greeting.setText("test for Post Greeting");
-        testRestTemplate.postForObject("/api/greetings", greeting, String.class);
+        //PUT&GET TEST
         Greeting putGreeting = new Greeting();
         putGreeting.setId(1L);
         putGreeting.setText("test for Put Greeting");
         testRestTemplate.put("/api/greetings/1", putGreeting, String.class);
-        String body = testRestTemplate.getForObject("/api/greetings", String.class);
+        body = testRestTemplate.getForObject("/api/greetings", String.class);
         assertThat(body).isEqualTo("[{\"id\":1,\"text\":\"test for Put Greeting\"}]");
-    }
 
-    @Test
-    public void delGreetingTest() {
-        Greeting greeting = new Greeting();
-        greeting.setText("test for Post Greeting");
-        testRestTemplate.postForObject("/api/greetings", greeting, String.class);
+        //DEL TEST
         testRestTemplate.delete("/api/greetings/1");
-        String body = testRestTemplate.getForObject("/api/greetings", String.class);
+        body = testRestTemplate.getForObject("/api/greetings", String.class);
         assertThat(body).isEqualTo("[]");
+
+
     }
 }
