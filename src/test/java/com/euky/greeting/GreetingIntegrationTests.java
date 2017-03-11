@@ -1,4 +1,4 @@
-package com.euky.tests.greeting;
+package com.euky.greeting;
 
 import com.euky.ws.web.api.Greeting;
 import org.junit.Test;
