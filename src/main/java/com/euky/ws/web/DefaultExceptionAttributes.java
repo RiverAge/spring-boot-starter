@@ -1,6 +1,5 @@
 package com.euky.ws.web;
 
-import javassist.bytecode.ExceptionsAttribute;
 import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
