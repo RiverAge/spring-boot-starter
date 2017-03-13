@@ -16,6 +16,10 @@ import java.util.Map;
  * Created by euky on 2017/3/11.
  */
 public class BaseController {
+
+    /**
+     * The Logger for this class hierarchy.
+     */
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(NoResultException.class)

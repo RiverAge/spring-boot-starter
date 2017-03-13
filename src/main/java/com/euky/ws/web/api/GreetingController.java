@@ -14,22 +14,39 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.concurrent.Future;
 
-
 /**
- * Created by euky on 2017/3/9.
+ * The GreetingController class is a Restful web service controller. The
+ * <code>@RestController</code> annotation informs Spring that each
+ * <code>@RequestMapping</code> methods returns a <code>@ResponseBody</code>
+ * which, by default, contains a ResponseEntity converted to JSON with an
+ * associated HTTP status code.
+ *
+ * @author euky
  */
 
 @RestController
-public class GreetingController extends BaseController{
+public class GreetingController extends BaseController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /**
+     * The greetingService business service.
+     */
     @Autowired
     private GreetingService greetingService;
 
+    /**
+     * The EmailService business service.
+     */
     @Autowired
     private EmailService emailService;
 
+    /**
+     * Wb service endpoint to fetch all Greeting entities. The service returns
+     * the collection of Greeting entities as JSON.
+     *
+     * @return A ResponseEntity containing a Collection of Greeting objects.
+     */
     @GetMapping(
             value = "/api/greetings",
             produces = MediaType.APPLICATION_JSON_VALUE)
