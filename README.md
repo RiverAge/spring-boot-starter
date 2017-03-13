@@ -1,3 +1,7 @@
+
+[![Build Status](https://travis-ci.org/RiverAge/spring-boot-starter.svg?branch=master)](https://travis-ci.org/RiverAge/spring-boot-starter)
+
+
 ## spring-boot-starter
 
 ### 启动 spring
